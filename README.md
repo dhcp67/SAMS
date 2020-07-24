@@ -8,7 +8,7 @@
 
 **源码地址**：  https://github.com/trainlee/SAMS
 
- **作者**：Aleen Lee
+ **作者**：Allen Lee
 
 
 

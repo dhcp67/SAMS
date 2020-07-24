@@ -1,4 +1,4 @@
-<h1 style="text-align:center">SAMS
+<h1 style="text-align:center">SAMS</h1>
 
 ---------------------------------
 

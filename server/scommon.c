@@ -121,7 +121,7 @@ void *client_request(void *pth_str) {
         writ_log_file(TRUE, "发送数据至客户端完成");
     }
     end_student(stu);                               //释放学生信息
-
+    writ_log_file(TRUE, "释放学生结构体");
     int flag;
     while (TRUE) {                                  //循环接收客户端请求    
         ret = recv(sockfd, &flag, sizeof(flag), 0); 
@@ -208,16 +208,19 @@ int socket_create(int port) {
 //初始化学生管理
 STU_M *init_student() {
     STU_M *stu = (STU_M *)malloc(sizeof(STU_M));                    //定义学生管理结构体申请空间
+    stu->stu_num = 0;                                               //学生数初始化为0
+    stu->course_num = 0;                                            //课程数初始化化为0
+    stu->head = NULL;                                               //设置为NULL，避免野指针
 
     FILE * fp = fopen(STUDENT_FILE, "r");                           //打开学生数据文件
     //循环读取
     char *tmp = malloc(sizeof(char *) * MAX_LEN);                   //定义一个临时字符串
 
 
-    if ((fp = fopen(STUDENT_FILE, "r")) != NULL) {                  //打开成功
+    if ((fp = fopen(STUDENT_FILE, "r")) >  0) {                  //打开成功
 
 
-            //读取学生数量和课程数量
+        //读取学生数量和课程数量
         int num;
         if (get_conf_value(STUDENT_FILE, "学生数", tmp) != -1) {    //读取学生数
             stu->stu_num = atoi(tmp);
@@ -230,20 +233,26 @@ STU_M *init_student() {
         fscanf(fp, "%s\n", tmp);
 
         //申请课程名内存
-        stu->course_name = (char **)malloc(sizeof(char*) * (stu->course_num));
+        if (stu->course_num) {
+            stu->course_name = (char **)malloc(sizeof(char*) * (stu->course_num));
+        }
         for (int i = 0; i < stu->course_num; i++) {
             stu->course_name[i] = (char *)malloc(sizeof(char) * MAX_LEN);
         }
 
         //读取第二行信息
         int end = stu->course_num;                                  //定义一个结尾
-        fscanf(fp, "%s", tmp);                                      //读入到临时字符串
-        fscanf(fp, "%s", tmp);                                      //读入到临时字符串
+        if (stu->course_num) {
+            fscanf(fp, "%s", tmp);                                      //读入到临时字符串
+            fscanf(fp, "%s", tmp);                                      //读入到临时字符串
+        }
         for(int i = 0; i < end; i++) {
             fscanf(fp, "%s", stu->course_name[i]);                  //循环读入课程名
         }
-        fscanf(fp, "%s", tmp);                                      //读入到临时字符串
-        fscanf(fp, "%s\n", tmp);                                    //读入到临时字符串
+        if (stu->course_num) {
+            fscanf(fp, "%s", tmp);                                      //读入到临时字符串
+            fscanf(fp, "%s\n", tmp);                                    //读入到临时字符串
+        }
 
         //开始读取学生数据
         stu = creat(stu);                                           //创建学生链表
@@ -267,7 +276,7 @@ STU_M *init_student() {
         fp = fopen(STUDENT_FILE, "w");                              //创建文件
         stu->stu_num = 0;                                           //学生数置0
         stu->course_num = 0;                                        //课程数置0
-        fprintf(fp, "学生数%d\n课程数=%d\n", 0, 0);                            //在文件中写入学生数和课程数为0
+        fprintf(fp, "学生数=%d\n课程数=%d\n", 0, 0);                            //在文件中写入学生数和课程数为0
         stu->course_name = NULL;                                    //课程名置空
         stu->head = NULL;                                           //学生头结点置空
         //writ_log_file(TRUE, "没有学生数据文件，成功创建学生数据文件");  //写日志
@@ -280,23 +289,23 @@ STU_M *init_student() {
 
 //创建学生链表函数
 STU_M *creat(STU_M *stu) {
-        STU *head;                          //定义一个头节点
-        STU *p1, *p2;                       //定义两个节点
-        // system("clear");
-		int len = sizeof(STU);
-        for (int i = 1; i < stu->stu_num + 1; i++) {   //循环开辟空间
-                p1 = (STU *)malloc(len);    //申请空间
-                p1->next = NULL;            //下一个节点指向空
-                if (i == 1) {               //如果是第一次
-                        head = p2 = p1;     
-                }
-                else {
-                        p2->next = p1;
-                        p2 = p1;
-                }
-        }
-    	stu->head = head;                   //赋值给学生管理结构体
-        return stu;
+    STU *head = NULL;                   //定义一个头节点，置空，避免野指针
+    STU *p1, *p2;                       //定义两个节点
+	int len = sizeof(STU);
+    for (int i = 1; i < stu->stu_num + 1; i++) {   //循环开辟空间
+            p1 = (STU *)malloc(len);    //申请空间
+            p1->next = NULL;            //下一个节点指向空
+            if (i == 1) {               //如果是第一次
+                    head = p2 = p1;     
+            }
+            else {
+                    p2->next = p1;
+                    p2 = p1;
+            }
+    }
+    stu->head = head;                   //赋值给学生管理结构体
+    writ_log_file(TRUE, "学生结点申请成功");
+    return stu;
 }
 
 //获取日期时间的函数，返回一个字符串指针，用完释放
@@ -333,7 +342,7 @@ void writ_log_file(int flag, const char *str) {
 
 //结束学生管理
 void end_student(STU_M *stu) {
-    STU *p, *tmp;                                           //定义一个指针和临时指针
+    STU *p = NULL, *tmp = NULL;                                           //定义一个指针和临时指针
     p = stu->head;                                          //临时指针指学生向头结点
     stu->head = NULL;                                       //学生管理结构体的头结点指向NULL，避免野指针
 
@@ -350,7 +359,8 @@ void end_student(STU_M *stu) {
         free(stu->course_name[i]);                          //释放课程名内存
     }
     free(stu->course_name);                                 //释放一级指针
-    writ_log_file(TRUE, "退出系统");                        //打印日志
+    free(stu);
+    writ_log_file(TRUE, "关闭学生管理结构体系统");                        //打印日志
 }
 
 //学生信息保存到文件

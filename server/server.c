@@ -10,10 +10,10 @@
 int main() {
 
     //创建守护进程
-	if(fork()) {                    //创建进程
-        exit(0);                    //退出父进程
-    }
-    setsid();                       //设置会话组
+	//if(fork()) {                    //创建进程
+    //    exit(0);                    //退出父进程
+    //}
+    //setsid();                       //设置会话组
 
     int server_listen;				//定义套接字变量
     int Port, CHPort;				//定义监听端口，客户端端口变量
@@ -47,7 +47,7 @@ int main() {
         pth_str->sockfd = new_sock_fd;              //新套接字赋值给结构体成员
 
         pthread_create(&p, NULL, client_request, (void *)pth_str);  //创建线程
-        pthread_detach(p);                          //放飞线程
+        pthread_join(p, NULL);                      //等待线程
     } 
 
     free(clientaddr);

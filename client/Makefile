@@ -14,7 +14,7 @@ client : $(file)
 
 #.PHONY: debug
 debug: ${file}
-	${CC} -g -DDEBUG -o $@ ${file} -lpthread
+	${CC} -g -DDEBUG -o $@ ${file} -lncursesw
 
 client.o: client.c
 	${CC} -c client.c -o $@

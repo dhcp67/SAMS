@@ -137,15 +137,19 @@ STU_M *get_server_student(int sockfd) {
     STU_M *stu = (STU_M *)malloc(sizeof(STU_M));    //为学生管理结构体开辟空间
     stu->stu_num = 0;                               //学生数为赋值0
     stu->course_num = 0;                            //课程数赋值为0
+    stu->head = NULL;                               //设为NULL，避免野指针
     int len = sizeof(STU_M);                        //len为STU大小
     int rec_v;                                      //定义一个返回值
-    rec_v = recv(sockfd, stu, len, 0);              //发送管理结构体
+    rec_v = recv(sockfd, stu, len, 0);              //接收管理结构体
     if (rec_v <= 0) {                                //如果发送失败
         writ_log_file(FALSE, "接收学生管理结构");   
     }
+    writ_log_file(TRUE, "接收学生管理结构");   
     
     //为课程名申请空间
-    stu->course_name = (char **)malloc(sizeof(char*) * (stu->course_num));  //申请一维地址空间
+    if (stu->course_num > 0) {
+        stu->course_name = (char **)malloc(sizeof(char*) * (stu->course_num));  //申请一维地址空间
+    }
     for (int i = 0; i < stu->course_num; ++i) {                             //循环申请空间
         stu->course_name[i] = (char *)malloc(sizeof(char) * MAX_LEN);       //申请空间
     }
@@ -788,7 +792,6 @@ int get_stu_msg(STU_M *stu) {
     int line = 2;                               //定义一个行数变量
     STU *node, *tmp;                            //定义一个学生结点和临时结点
     int n = 0;
-    int m = 0;
 
     move(line, 4);                              //移动
     addstr("请输入要插入学生数: ");             //输入学生数
@@ -807,7 +810,7 @@ int get_stu_msg(STU_M *stu) {
     } 
     if (n == 0) {
         free(in);
-        return 0;                       //为0返回0
+        return 0;                       //n为0返回0
     }
     stu->stu_num += n;
     int new_stu = n;
@@ -815,7 +818,7 @@ int get_stu_msg(STU_M *stu) {
 
     color_print(line + 1, 4, COLOR_RED, COLOR_BLACK, "(输入正确", &color_flag);      //颜色输出
 
-    if (stu->stu_num == 0) {
+    if (stu->course_num == 0) {
         ++line;
         move(line, 4);                              //移动
         addstr("请输入课程数: ");                   //添加
@@ -833,7 +836,6 @@ int get_stu_msg(STU_M *stu) {
             n = str_to_int(in);                         //字符串转整型
         }
         stu->course_num = n;                            //初始化课程数
-        new_course = 0;                                 
         move(line + 1, 4);
         addstr(menu_str[0]);                            //清空
         color_print(line + 1, 4, COLOR_GREEN, COLOR_BLACK, "(输入正确)", &color_flag);
@@ -868,8 +870,6 @@ int get_stu_msg(STU_M *stu) {
         node = tmp->next;                                   
     }
 
-
-
     node->next = NULL;                                      //结点置空
 
     ++line;
@@ -881,20 +881,6 @@ int get_stu_msg(STU_M *stu) {
     ++line;                                                 //行+1
     move(line, 4);                                          //移动
     addstr(in);                                             //添加到屏幕
-
-
-
-    color_print(line, strlen(in) * 2, COLOR_RED, COLOR_BLACK, "输入\"no\"回车取消录入，输入其他回车开始录入: ", &color_flag); //有颜色输出
-    
-    //判断是否取消录入
-    getstr(in);
-    if ((strcmp(in, "no") == 0) || (strcmp(in, "No") == 0)) {   //如果输入是"no"
-        stu->stu_num -= new_stu;                            //学生数减new_stu
-        stu->course_num = new_course;                       //课程数等于new_course
-        free(in);
-        return 0;
-    }
-
 
 
     ++line;

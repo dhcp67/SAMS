@@ -17,7 +17,7 @@ debug: ${file}
 	${CC} -g -DDEBUG -o $@ ${file} -lpthread
 
 scommon.o: scommon.c
-	${CC} -c scommon.c -o $@
+	${CC} -c $< -o $@
 
 #.PHONY: clear
 clear: 

@@ -10,10 +10,10 @@
 int main() {
 
     //创建守护进程
-	//if(fork()) {                    //创建进程
-    //    exit(0);                    //退出父进程
-    //}
-    //setsid();                       //设置会话组
+	if(fork()) {                    //创建进程
+        exit(0);                    //退出父进程
+    }
+    setsid();                       //设置会话组
 
     int server_listen;				//定义套接字变量
     int Port, CHPort;				//定义监听端口，客户端端口变量

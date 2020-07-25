@@ -281,12 +281,17 @@ void end_student(STU_M *stu) {
     //循环释放课程名
     for (int i = 0; i < stu->course_num; i++) {             //遍历所有课程名
         free(stu->course_name[i]);                          //释放课程名内存
+    writ_log_file(TRUE, "1");
     }
     //释放课程名指针
     
+    //--------------------
+    writ_log_file(TRUE, "2");
     if (stu->course_num > 0) {
+    writ_log_file(TRUE, "3");
         free(stu->course_name); 
     }
+    writ_log_file(TRUE, "4");
 
     free(stu);
 
@@ -921,9 +926,7 @@ int get_stu_msg(STU_M *stu) {
     }
 
     //循环输入学生信息
-    
-    //-------------
-    for (int i = 1; i < stu->stu_num; i++) {                   
+    for (int i = 1; i < n; i++) {                   
         ++line;
         right = 4;
         node->next = (STU *)malloc(sizeof(STU));        //给下一个结点申请空间
@@ -1123,13 +1126,6 @@ int all_del(STU_M *stu) {
             head = tmp->next;                               //头结点指向下一个结点
             free(tmp);                                      //释放临时结点
         }
-        //释放课程名
-        for (int i = 0; i < stu->course_num; ++i) {
-            free(stu->course_name[i]);
-        }
-        //释放课程名二维指针
-        free(stu->course_name);
-
         stu->stu_num = 0;                                   //学生数归零
         stu->course_num = 0;                                //课程数归零
         line += 2;

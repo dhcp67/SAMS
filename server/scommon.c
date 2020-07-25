@@ -60,15 +60,17 @@ STU_M *get_client_student(int sockfd) {
     len = sizeof(STU);
 	stu = creat(stu);
     STU *node = stu->head;
-    STU *tmp = node->next;
+    STU *tmp = node;
 
 
     //接收学生信息
+
+
     for (int i = 0; i < stu->stu_num; i++) {
         if (i) {
             node = node->next;
-            tmp = tmp->next;
         }
+        tmp = tmp->next;
         
         rec_v = recv(sockfd, node, len, 0);
         if (rec_v < 0) {
@@ -129,6 +131,7 @@ void *client_request(void *pth_str) {
             break;
         } else if (flag == 1) {
             stu = get_client_student(sockfd);       //从客户端接收学生数据
+            writ_log_file(TRUE, "开始写入数据");    //日志
             write_to_file(stu);                     //学生信息写入到文件
             end_student(stu);                       //释放学生信息
         }

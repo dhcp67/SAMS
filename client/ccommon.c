@@ -276,17 +276,20 @@ void end_student(STU_M *stu) {
         p = p->next;                                        //p指向下一个结点
         free(tmp);                                          //释放临时指针
     }
+    writ_log_file(TRUE, "释放学生节点完毕");
 
     p = NULL, tmp = NULL;                                   //p和临时指针支持NULL
     //循环释放课程名
     for (int i = 0; i < stu->course_num; i++) {             //遍历所有课程名
         free(stu->course_name[i]);                          //释放课程名内存
     }
+    writ_log_file(TRUE, "释放课程名完毕");
+
     //释放课程名指针
-    
     if (stu->course_num > 0) {
         free(stu->course_name); 
     }
+    writ_log_file(TRUE, "释放课程名二维指针完毕");
 
     free(stu);
 

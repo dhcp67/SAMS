@@ -52,11 +52,11 @@ int main() {
     free(in);//释放判断标志
 
     end_student(stu);       //释放学生信息
-    writ_log_file(TRUE, "成功释放学生信息");
     stu = NULL;             //stu指向NULL，避免野指针
+    writ_log_file(TRUE, "成功释放学生信息");
     free(ip);
     free(port);
-    endwin();         //结束窗口
+    endwin();               //结束窗口
     printf("已退出!\n");
     return 0;
 }

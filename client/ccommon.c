@@ -799,7 +799,8 @@ int get_stu_msg(STU_M *stu) {
     int line = 2;                               //定义一个行数变量
     STU *node, *tmp;                            //定义一个学生结点和临时结点
     int right = 4;                              //定义水平坐标
-    int n = 0;
+    int num;                                    //一个数组用来记录新添学生数
+    int n = 0;                                  //n用来记录数字
 
     move(line, right);                              //移动
     addstr("请输入要插入学生数: ");             //输入学生数
@@ -820,6 +821,7 @@ int get_stu_msg(STU_M *stu) {
         free(in);
         return 0;                       //n为0返回0
     }
+    num = n;
     stu->stu_num += n;
     int new_stu = n;
     int new_course = stu->course_num;
@@ -901,29 +903,27 @@ int get_stu_msg(STU_M *stu) {
 
     right = 4;
     ++line;
-    move(line, right);                                      //移动
+    move(line, right);                                  //移动
     refresh();                                          //刷新
     getstr(in);                                         //输入
     node->id = atoi(in);                                //字符转整型
  
     right += 10;
-    move(line, right);                                      //移动
+    move(line, right);                                  //移动
     refresh();                                          //刷新
     getstr(node->name);                                 //输入
 
     //循环输入课程分数
     for (int i = 0; i < stu->course_num; i++) {   
         right += 10;
-        move(line, right);                                  //移动                               
+        move(line, right);                              //移动                               
         refresh();                                      //刷新
         getstr(in);                                     //输入
         node->score[i] = atof(in);              
     }
 
     //循环输入学生信息
-    
-    //-------------
-    for (int i = 1; i < stu->stu_num; i++) {                   
+    for (int i = 1; i < num; i++) {                   
         ++line;
         right = 4;
         node->next = (STU *)malloc(sizeof(STU));        //给下一个结点申请空间

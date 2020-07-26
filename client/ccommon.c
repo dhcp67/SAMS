@@ -291,7 +291,8 @@ void end_student(STU_M *stu) {
     writ_log_file(TRUE, "释放课程名完毕");
 
     //释放课程名指针
-    if (stu->course_num > 0) {
+    
+    if (stu->course_num < 0) {
         free(stu->course_name); 
     }
     writ_log_file(TRUE, "释放课程名二维指针完毕");

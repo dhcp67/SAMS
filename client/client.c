@@ -22,6 +22,7 @@ int main() {
         printf("连接失败\n");
         exit(-1);
     }
+    writ_log_file(TRUE, "");
     writ_log_file(TRUE, "已经连接上服务器"); //写日志
 
     setlocale(LC_ALL,"");                //设置编码
@@ -53,7 +54,7 @@ int main() {
 
     end_student(stu);       //释放学生信息
     stu = NULL;             //stu指向NULL，避免野指针
-    writ_log_file(TRUE, "成功释放学生信息");
+    writ_log_file(TRUE, "退出系统");
     free(ip);
     free(port);
     endwin();               //结束窗口

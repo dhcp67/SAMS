@@ -393,7 +393,7 @@ void  write_to_file(STU_M *stu) {
         for (int i = 0; i < stu->course_num; i++) {
             fprintf(fp, "\t%.2f", node->score[i]);                          //写入分数
         }
-        fprintf(fp, "\t%.2f\t%.2f\n", node->sum, node->aver);
+        fprintf(fp, "\t\t%.2f\t%.2f\n", node->sum, node->aver);
         node = node->next;                  
     }
     writ_log_file(TRUE, "成功写入学生数据");    //写日志

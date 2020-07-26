@@ -293,27 +293,49 @@ void end_student(STU_M *stu) {
 
     free(stu);
 
-    writ_log_file(TRUE, "退出系统");                        //打印日志
+    writ_log_file(TRUE, "学生信息释放完毕");                        //打印日志
 }
 
 //输出学生信息函数
+#define _addstr(linr, right, str) {\
+        move(line, right);\
+        addstr(str);\
+        right += 10;\
+        }
 void print_msg(STU_M *stu) {
 
     erase();                    //清屏
     gui();                      //画框架
-    int line = 2;
+    int line = 2;               //定义一个行数变量
+    int right = 4;              //定义一个横坐标
     char *str = (char *)malloc(sizeof(char) * 3 * MAX_LEN);
     
-    
-    sprintf(str, "%12s%12s", "学号", "姓名");                   //输出表头
+    sprintf(str, "%s", "学号");                   //输出表头
+    move(line, right);
+    addstr(str);
+
+    right += 10;
+    sprintf(str, "%s", "姓名");                   //输出表头
+    move(line, right);
+    addstr(str);
 
     for (int i = 0; i < stu->course_num; i++) {                 //循环遍历课程名
-        sprintf(str, "%s\t%s", str, stu->course_name[i]);       //输出课程名
+        right += 10;
+        sprintf(str, "%s", stu->course_name[i]);       //输出课程名
+        move(line, right);
+        addstr(str);
     }
-    sprintf(str, "%s\t%s\t%s", str, "总分", "平均分");          //格式化输出到str
-        
-    move(line, 4);                                              //移动
-    addstr(str);                                                //添加到屏幕
+
+    right += 10;
+    sprintf(str, "%s", "平均分");          //格式化输出到str
+    move(line, right);
+    addstr(str);
+    
+    right += 10;
+    sprintf(str, "%s", "平均分");          //格式化输出到str
+    move(line, right);
+    addstr(str);
+
     refresh();                                                  //刷新
 
     STU *tmp = stu->head;                                       //定义学生临时节点等于头节点
@@ -321,16 +343,21 @@ void print_msg(STU_M *stu) {
     //循环输出学生信息
     //while (tmp) {
     for (int i = 0; i < stu->stu_num; i++) {
-        sprintf(str, "%10ld%10s", tmp->id, tmp->name);          //格式化输出到学号姓名到str
+        ++line, right = 4;
+        sprintf(str, "%ld", tmp->id);          //格式化输出到学号姓名到str
+        _addstr(line,right, str);
+        sprintf(str, "%s", tmp->name);          //格式化输出到学号姓名到str
+        _addstr(line,right, str);
         //循环遍历分数
         for (int j = 0; j < stu->course_num; j++) {
-            sprintf(str, "%s\t%.2lf", str, tmp->score[j]);      //格式化输出分数到str
+            sprintf(str, "%.2lf", tmp->score[j]);      //格式化输出分数到str
+            _addstr(line,right, str);
         }
-        sprintf(str, "%s\t%.2lf\t%.2f", str, tmp->sum, tmp->aver);   //格式化输出总分和平均分到str
+        sprintf(str, "%.2f", tmp->sum);   //格式化输出总分和平均分到str
+        _addstr(line,right, str);
+        sprintf(str, "%.2f", tmp->aver);   //格式化输出总分和平均分到str
+        _addstr(line,right, str);
         tmp = tmp->next;                                        //临时节点等于下一个节点
-        ++line;
-        move(line, 4);                                          //移动
-        addstr(str);                                            //添加到屏幕
     }
     free(str);                          //释放str空间 
     ++line;                             //行+1                            
@@ -1186,7 +1213,6 @@ void over(int sockfd) {
     int val = 0;
     send(sockfd, &val, sizeof(val), 0); //发送0
     close(sockfd);                      //关闭套接字
-    writ_log_file(TRUE, "关闭套接字");
     return ;
 }
 
@@ -1246,9 +1272,9 @@ int get_winsize(int flag) {
 
 //页面框架
 void gui() {
-    box(stdscr,'|','-');    //'|'竖边框,'-'横边框
+    box(stdscr,'|','-');                    //'|'竖边框,'-'横边框
     char *stu_str = "学生信息管理系统";     //标题
     int mid = (get_winsize(COL) - strlen(stu_str)) / 2 - 1; //中点
-    move(0, mid);   //移动
-    addstr("学生信息管理系统"); //添加字符串
+    move(0, mid);                           //移动
+    addstr("学生信息管理系统");             //添加字符串
 }

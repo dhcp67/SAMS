@@ -267,8 +267,11 @@ void writ_log_file(int flag, const char *str) {
 //结束学生管理
 void end_student(STU_M *stu) {
     STU *p, *tmp;                                           //定义一个指针和临时指针
+        printf("1\n");
     p = stu->head;                                          //临时指针指学生向头结点
+        printf("2\n");
     stu->head = NULL;                                       //学生管理结构体的头结点指向NULL，避免野指针
+        printf("3\n");
 
     //循环释放
     while(p) {                                              //指针不为空时循环
@@ -1147,7 +1150,6 @@ int all_del(STU_M *stu) {
     if ((strcmp(dstr, "yes") == 0) || (strcmp(dstr, "1") == 0)) {                                         //如果删除
         STU *head = stu->head;                              //定义一个头结点
         STU *tmp;                                           //定义一个临时结点
-        stu->head = NULL;                                   //学生管理结构体头结点置空
         while(head) {                                       //遍历结点
             tmp = head;                                     //赋予临时结点
             head = tmp->next;                               //头结点指向下一个结点
@@ -1162,6 +1164,7 @@ int all_del(STU_M *stu) {
 
         stu->stu_num = 0;                                   //学生数归零
         stu->course_num = 0;                                //课程数归零
+        stu->head = NULL;                                   //学生管理结构体头结点置空
         line += 2;
         color_print(line, 6, COLOR_RED, COLOR_BLACK, "已删除", &color_flag);
 
@@ -1212,7 +1215,6 @@ int send_stu_data(STU_M *stu, const int sockfd) {
 void over(int sockfd) {
     int val = 0;
     send(sockfd, &val, sizeof(val), 0); //发送0
-    close(sockfd);                      //关闭套接字
     return ;
 }
 

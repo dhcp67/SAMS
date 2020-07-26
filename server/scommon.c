@@ -268,7 +268,7 @@ STU_M *init_student() {
                 for (int j = 0; j < stu->course_num; j++) {
                         fscanf(fp, "%f", &p->score[j]);             //读入分数
                 }
-                fscanf(fp, "%f%f", &p->sum, &p->aver);              //读入总分和平均分
+                fscanf(fp, "%f\t%f", &p->sum, &p->aver);              //读入总分和平均分
 
                 p = p->next;                                        //p移动到下个学生结点
 
@@ -393,7 +393,7 @@ void  write_to_file(STU_M *stu) {
         for (int i = 0; i < stu->course_num; i++) {
             fprintf(fp, "\t%.2f", node->score[i]);                          //写入分数
         }
-        fprintf(fp, "\t\t%.2f\t%.2f\n", node->sum, node->aver);
+        fprintf(fp, "\t%.2f\t%.2f\n", node->sum, node->aver);
         node = node->next;                  
     }
     writ_log_file(TRUE, "成功写入学生数据");    //写日志

@@ -16,13 +16,13 @@ int main() {
 	get_conf_value(CONF_FILE, "To", ip);    //获取ip地址
     get_conf_value(CONF_FILE, "ServerPort", port);//获取端口
     sockfd = socket_connect(ip, atoi(port)); 
+    writ_log_file(TRUE, "");
     if (sockfd < 0) {
         writ_log_file(FALSE, "连接失败"); //写日志
         endwin();
         printf("连接失败\n");
         exit(-1);
     }
-    writ_log_file(TRUE, "");
     writ_log_file(TRUE, "已经连接上服务器"); //写日志
 
     setlocale(LC_ALL,"");                //设置编码
@@ -54,10 +54,11 @@ int main() {
 
     end_student(stu);       //释放学生信息
     stu = NULL;             //stu指向NULL，避免野指针
-    writ_log_file(TRUE, "退出系统");
+    close(sockfd);
     free(ip);
     free(port);
     endwin();               //结束窗口
+    writ_log_file(TRUE, "退出系统");
     printf("已退出!\n");
     return 0;
 }

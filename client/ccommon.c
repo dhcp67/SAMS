@@ -187,6 +187,8 @@ STU_M *get_server_student(int sockfd) {
 
 //上传学生信息
 int save_to_server(STU_M *stu, int sockfd) {
+    erase();                                        //清屏
+    gui();                                          //画框架
     int ret;                                        //定义一个返回值
     int flag = 1;                                   //定义一个标志
     ret = send(sockfd, &flag, sizeof(flag), 0);     //发送标志
@@ -202,6 +204,9 @@ int save_to_server(STU_M *stu, int sockfd) {
         writ_log_file(TRUE, "成功上传数据");        //写日志
         DEBUG_PRINT("成功上传数据\n");
     }
+    color_print(get_winsize(ROW) / 2, (get_winsize(COL) - 38) / 2, COLOR_BLUE, COLOR_BLACK, "已保存到服务器，按任意键返回菜单", &color_flag);
+    refresh();
+    getch();
     return ret;
 }
 
@@ -267,11 +272,8 @@ void writ_log_file(int flag, const char *str) {
 //结束学生管理
 void end_student(STU_M *stu) {
     STU *p, *tmp;                                           //定义一个指针和临时指针
-        printf("1\n");
     p = stu->head;                                          //临时指针指学生向头结点
-        printf("2\n");
     stu->head = NULL;                                       //学生管理结构体的头结点指向NULL，避免野指针
-        printf("3\n");
 
     //循环释放
     while(p) {                                              //指针不为空时循环
@@ -1172,10 +1174,10 @@ int all_del(STU_M *stu) {
         line += 2;
         color_print(line, 6, COLOR_GREEN, COLOR_BLACK, "已取消", &color_flag);
     }
+    refresh();
     ++line;
     color_print(line, 6, COLOR_BLUE, COLOR_BLACK, \
                 "按任意键返回菜单", &color_flag);
-    refresh();
     getch();
     free(dstr);                                             //释放字符串
     dstr = NULL;                                            //str置空，避免野指针

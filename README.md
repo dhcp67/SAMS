@@ -34,6 +34,8 @@
 
 * 安装所需要的库：``apt-get install libncurses5-dev``
 
+  `http://ftp.gnu.org/pub/gnu/ncurses/` **手动下载地址**
+
 其他发行版自行搜索安装
 
 
